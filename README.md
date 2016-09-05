@@ -24,5 +24,37 @@ end
 
 ## Usage
 
+```elixir
+defmodule UserController do
+  use ApiController
+
+  defmethod :create, user_params do
+    # code
+  end
+
+  defp user_params do
+    [
+      name: [required: true, type: :string],
+      password: [required: true, type: :string, length: 8..32],
+      type: [required: true, type: :string, values: ["user", "admin"]]
+      bio: [type: :string],
+      age: [type: :integer]
+    ]
+  end
+end
+```
+
+if params invalid, response will look like:
+
+```json
+{
+  "status": "error",
+  "reason": "invalid_params",
+  "errors": ["name is required",
+             "password length must be between 8 and 32 characters",
+             "age should be a integer",
+             "type should be in [user, admin]"]
+}
+```
 
 ## Configuration
