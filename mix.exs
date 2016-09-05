@@ -35,6 +35,6 @@ defmodule ApiController.Mixfile do
      files: ["lib", "mix.exs"],
      maintainers: ["Andrey Noskov"],
      licenses: ["MIT"],
-     links: %{"GitHub" => "https://github.com/anoskov/ex_api_controller"}]
+     links: %{"GitHub" => "https://github.com/ccsteam/ex-api-controller"}]
   end
 end
