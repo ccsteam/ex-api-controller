@@ -7,7 +7,7 @@ defmodule ApiController do
 
   defmacro __using__(_) do
     quote do
-      use Utils.application_module.Web, :controller
+      use unquote(Utils.application_module).Web, :controller
 
       @behaviour unquote(__MODULE__)
 
