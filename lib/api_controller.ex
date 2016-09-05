@@ -5,6 +5,11 @@ defmodule ApiController do
   """
   @callback show_error(Plug.Conn.t, String.t, atom | non_neg_integer) :: Plug.Conn.t
 
+  @doc """
+  Render JSON result and status
+  """
+  @callback show_result(Plug.Conn.t, term, atom | non_neg_integer) :: Plug.Conn.t
+
   defmacro __using__(_) do
     quote do
       use unquote(Utils.application_module).Web, :controller
@@ -16,6 +21,13 @@ defmodule ApiController do
         |> put_view(View)
         |> put_status(status)
         |> render("error.json", error: error)
+      end
+
+      def show_result(conn, result, status \\ 200) do
+        conn
+        |> put_view(View)
+        |> put_status(status)
+        |> render("result.json", result: result)
       end
 
       defmacro presence?(attribute) do
@@ -32,7 +44,7 @@ defmodule ApiController do
         end
       end
 
-      defoverridable show_error: 3
+      defoverridable show_error: 3, show_result: 3
     end
   end
 end
