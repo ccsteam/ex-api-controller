@@ -1,8 +1,10 @@
 defmodule ApiController.View do
   alias ApiController.Utils
 
-  quote do
-    use unquote(Utils.application_module).Web, :view
+  defmacro __before_compile__(_env) do
+    quote do
+      use unquote(Utils.application_module).Web, :view
+    end
   end
 
   def render("error.json", %{error: error}) do
