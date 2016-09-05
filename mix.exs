@@ -14,11 +14,12 @@ defmodule ApiController.Mixfile do
   end
 
   def application do
-    [applications: []]
+    [applications: [:phoenix]]
   end
 
   defp deps do
-    [{:ex_doc, ">= 0.0.0", only: :dev}]
+    [{:ex_doc, ">= 0.0.0", only: :dev},
+     {:phoenix, "~> 1.2.0"}]
   end
 
   defp aliases do
