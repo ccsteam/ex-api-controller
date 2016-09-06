@@ -61,6 +61,16 @@ defmodule ApiController.ValidatorTest do
     assert res == "field should be in [\"foo\"]"
   end
 
+  test "validate! exclusion returns nil if value not in list" do
+    res = Validator.validate!({:exclusion, ["foo"]}, {:field, "value"})
+    assert is_nil(res)
+  end
+
+  test "validate! exclusion returns error if value in list" do
+    res = Validator.validate!({:exclusion, ["foo"]}, {:field, "foo"})
+    assert res == "field should not be in [\"foo\"]"
+  end
+
   test "validate! type returns nil if value is nil" do
     res = Validator.validate!({:type, :string}, {:field, nil})
     assert is_nil(res)
