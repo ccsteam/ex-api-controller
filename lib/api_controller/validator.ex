@@ -92,6 +92,13 @@ defmodule ApiController.Validator do
   def validate!({:type, :map}, {attribute, _value}) do
     validate_error!({:type, :map}, attribute)
   end
+  def validate!({:type, :list}, {_attribute, value})
+      when is_list(value) do
+    nil
+  end
+  def validate!({:type, :list}, {attribute, _value}) do
+    validate_error!({:type, :list}, attribute)
+  end
   def validate!({:length, _first.._last = range}, {attribute, value})
       when is_binary(value) do
     unless String.length(value) in range, do: validate_error!({:length, range}, attribute)
