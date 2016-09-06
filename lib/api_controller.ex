@@ -17,11 +17,11 @@ defmodule ApiController do
       import unquote(__MODULE__)
       @behaviour unquote(__MODULE__)
 
-      def show_error(conn, error, status \\ :bad_request) do
+      def show_error(conn, reason, status \\ :bad_request, errors \\ []) do
         conn
         |> put_view(View)
         |> put_status(status)
-        |> render("error.json", error: error)
+        |> render("error.json", reason: reason, errors: [])
       end
 
       def show_result(conn, result, status \\ 200) do
@@ -31,7 +31,7 @@ defmodule ApiController do
         |> render("result.json", result: result)
       end
 
-      defoverridable show_error: 3, show_result: 3
+      defoverridable show_error: 4, show_result: 3
     end
   end
 
@@ -40,30 +40,31 @@ defmodule ApiController do
 
   ## Examples
 
-      defmethod :create do
-        value = params["key"]
-        show_result(conn, v)
+      defmethod :create, user_schema do
+        name = request_params["name"]
+        show_result(conn, name)
+      end
+
+      defp user_schema do
+        [
+          name: [required: true, type: :string],
+          password: [required: true, type: :string, length: 8..32],
+          type: [required: true, type: :string, inclusion: ["user", "admin"]]
+          bio: [type: :string],
+          age: [type: :integer]
+        ]
       end
   """
-  defmacro defmethod(name, do: block) do
+  defmacro defmethod(name, schema, do: block) do
     quote do
-      def unquote(name)(var!(conn), var!(params)) do
-        unquote(block)
+      def unquote(name)(var!(conn), var!(request_params)) do
+        case ApiController.Validator.validate_attributes(var!(request_params), unquote(schema)) do
+          {:error, errors} ->
+            show_error(var!(conn), "invalid_attributes", :bad_request, errors)
+          _ ->
+            unquote(block)
+        end
       end
-    end
-  end
-
-  defmacro presence?(attribute) do
-    case Macro.Env.in_guard?(__CALLER__) do
-      true ->
-        quote do
-          not is_nil(unquote(attribute)) and unquote(attribute) != ""
-        end
-      false ->
-        quote do
-          attribute = unquote(attribute)
-          !is_nil(attribute) && attribute != ""
-        end
     end
   end
 
