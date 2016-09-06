@@ -1,12 +1,18 @@
 defmodule ApiController do
   alias ApiController.{Utils, View}
   @doc """
-  Render JSON error and status
+  Render JSON error and status.
+
+  Response example:
+  {"status": "error", "reason": "record_not_found", errors: []}
   """
-  @callback show_error(Plug.Conn.t, String.t, atom | non_neg_integer) :: Plug.Conn.t
+  @callback show_error(Plug.Conn.t, String.t, atom | non_neg_integer, [] | [String.t]) :: Plug.Conn.t
 
   @doc """
-  Render JSON result and status
+  Render JSON result and status.
+
+  Response example:
+  {"status": "ok", "result": "data"}
   """
   @callback show_result(Plug.Conn.t, term, atom | non_neg_integer) :: Plug.Conn.t
 
