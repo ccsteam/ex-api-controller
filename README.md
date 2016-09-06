@@ -98,5 +98,8 @@ def show_result(conn, result, status \\ 200)
 
 ```elixir
 config :api_controller,
-  application_module: MyApp
+  application_module: MyApp,
+  attributes_key_path: false # get attributes from request_params map
+  #attributes_key_path: "data" # from request_params["data"]
+  #attributes_key_path: ["data", "attributes"] # from request_params["data"]["attributes"]
 ```
