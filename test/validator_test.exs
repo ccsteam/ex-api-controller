@@ -118,12 +118,12 @@ defmodule ApiController.ValidatorTest do
 
   test "validate! length range returns error if value length not in range" do
     res = Validator.validate!({:length, 10..20}, {:field, "foo"})
-    assert res == "field length should be between 10 and 20 characters"
+    assert res == "field length should be between 10 and 20"
   end
 
   test "validate! length returns error if value length greater than length" do
     res = Validator.validate!({:length, 5}, {:field, "foobar"})
-    assert res == "field length should be less than or equal 5 characters"
+    assert res == "field length should be less than or equal 5"
   end
 
   test "validate! length returns nil if value length in range" do

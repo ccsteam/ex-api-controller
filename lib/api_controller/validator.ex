@@ -133,9 +133,9 @@ defmodule ApiController.Validator do
     "#{attribute} should not be in #{inspect(list)}"
   end
   defp validate_error!({:length, first..last}, attribute) do
-    "#{attribute} length should be between #{first} and #{last} characters"
+    "#{attribute} length should be between #{first} and #{last}"
   end
   defp validate_error!({:length, value}, attribute) do
-    "#{attribute} length should be less than or equal #{value} characters"
+    "#{attribute} length should be less than or equal #{value}"
   end
 end
