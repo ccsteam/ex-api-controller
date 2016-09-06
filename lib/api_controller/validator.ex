@@ -61,8 +61,35 @@ defmodule ApiController.Validator do
       when is_binary(value) do
     if value == "", do: validate_error!(:required, attribute)
   end
+  def validate!({:type, :string}, {_attribute, value})
+      when is_binary(value) do
+    nil
+  end
+  def validate!({:type, :string}, {attribute, _value}) do
+    validate_error!({:type, :string}, attribute)
+  end
+  def validate!({:type, :integer}, {_attribute, value})
+      when is_integer(value) do
+    nil
+  end
+  def validate!({:type, :integer}, {attribute, _value}) do
+    validate_error!({:type, :integer}, attribute)
+  end
+  def validate!({:type, :map}, {_attribute, value})
+      when is_map(value) do
+    nil
+  end
+  def validate!({:type, :map}, {attribute, _value}) do
+    validate_error!({:type, :map}, attribute)
+  end
+  def validate!(_condition, _attribute) do
+    nil
+  end
 
   defp validate_error!(:required, attribute) do
     "#{attribute} is required and can't be blank"
+  end
+  defp validate_error!({:type, type}, attribute) do
+    "#{attribute} should be a #{type}"
   end
 end

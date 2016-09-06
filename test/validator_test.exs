@@ -51,6 +51,36 @@ defmodule ApiController.ValidatorTest do
     assert res == "field is required and can't be blank"
   end
 
+  test "validate! string type returns nil if value is binary" do
+    res = Validator.validate!({:type, :string}, {:field, "value"})
+    assert is_nil(res)
+  end
+
+  test "validate! string type returns error if value isn't binary" do
+    res = Validator.validate!({:type, :string}, {:field, 2})
+    assert res == "field should be a string"
+  end
+
+  test "validate! integer type returns nil if value is integer" do
+    res = Validator.validate!({:type, :integer}, {:field, 2})
+    assert is_nil(res)
+  end
+
+  test "validate! integer type returns error if value isn't integer" do
+    res = Validator.validate!({:type, :integer}, {:field, ""})
+    assert res == "field should be a integer"
+  end
+
+  test "validate! map type returns nil if value is map" do
+    res = Validator.validate!({:type, :map}, {:field, %{}})
+    assert is_nil(res)
+  end
+
+  test "validate! map type returns error if value isn't map" do
+    res = Validator.validate!({:type, :map}, {:field, ""})
+    assert res == "field should be a map"
+  end
+
   test "validation_result! returns errors if errors list not empty" do
     res = Validator.validation_result(["field is required and can't be blank"])
     assert res == {:error, ["field is required and can't be blank"]}
