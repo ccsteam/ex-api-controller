@@ -2,9 +2,33 @@ defmodule ApiController.ValidatorTest do
   use ExUnit.Case, async: false
   alias ApiController.Validator
 
+  setup do
+    on_exit fn ->
+      Application.put_env(:api_controller, :attributes_key_path, false)
+    end
+  end
+
   test "extract_schema_keys! method returns list of keys" do
     schema_keys = Validator.extract_schema_keys!(schema)
     assert schema_keys == ["name", "surname"]
+  end
+
+  test "extract_attributes! method returns request_params if attrs_keypath false" do
+    attributes = Validator.extract_attributes!(%{"foo" => "bar"})
+    assert attributes == %{"foo" => "bar"}
+  end
+
+  test "extract_attributes! method returns request_params[\"data\"] if attrs_keypath \"data\"" do
+    Application.put_env(:api_controller, :attributes_key_path, "data")
+    attributes = Validator.extract_attributes!(%{"data" => %{"foo" => "bar"}})
+    assert attributes == %{"foo" => "bar"}
+  end
+
+  test "extract_attributes! method returns request_params[\"data\"][\"attributes\"]
+        if attrs_keypath [\"data\", \"attributes\"]" do
+    Application.put_env(:api_controller, :attributes_key_path, ["data", "attributes"])
+    attributes = Validator.extract_attributes!(%{"data" => %{"attributes" => %{"foo" => "bar"}}})
+    assert attributes == %{"foo" => "bar"}
   end
 
   test "filter_attributes! method filter request_params" do

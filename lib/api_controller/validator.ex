@@ -1,10 +1,14 @@
 defmodule ApiController.Validator do
+  alias ApiController.Utils
 
   @spec validate_attributes(map, Keyword.t) :: {:ok, :valid} | {:error, [String.t]}
   def validate_attributes(request_params, schema)
       when is_map(request_params) do
     schema_keys = extract_schema_keys!(schema)
-    request_params = request_params |> filter_attributes!(schema_keys)
+    request_params =
+     request_params
+     |> extract_attributes!
+     |> filter_attributes!(schema_keys)
 
     schema
     |> Enum.map(fn {name, validations} ->
@@ -21,6 +25,31 @@ defmodule ApiController.Validator do
   def validate_attribute!({name, validations}, value) do
     validations
     |> Enum.map(&validate!(&1, {name, value}))
+  end
+
+  @spec extract_attributes!(map) :: map
+  def extract_attributes!(request_params)
+      when is_map(request_params) do
+    key_path = Utils.attributes_key_path
+    extract_attributes!(key_path, request_params)
+  end
+
+  @spec extract_attributes!(String.t | [] | [String.t] | false, map) :: map
+  defp extract_attributes!(false, request_params)
+      when is_map(request_params) do
+    request_params
+  end
+  defp extract_attributes!([], request_params)
+      when is_map(request_params) do
+    request_params
+  end
+  defp extract_attributes!([hd|tl], request_params)
+      when is_map(request_params) do
+    extract_attributes!(tl, extract_attributes!(hd, request_params))
+  end
+  defp extract_attributes!(key, request_params)
+      when is_map(request_params) and is_binary(key) do
+    Map.fetch!(request_params, key)
   end
 
   @doc false
