@@ -91,6 +91,26 @@ defmodule ApiController.ValidatorTest do
     assert res == "field should be a map"
   end
 
+  test "validate! length range returns error if value length not in range" do
+    res = Validator.validate!({:length, 10..20}, {:field, "foo"})
+    assert res == "field length should be between 10 and 20 characters"
+  end
+
+  test "validate! length returns error if value length greater than length" do
+    res = Validator.validate!({:length, 5}, {:field, "foobar"})
+    assert res == "field length should be less than or equal 5 characters"
+  end
+
+  test "validate! length returns nil if value length in range" do
+    res = Validator.validate!({:length, 5..20}, {:field, "foobar"})
+    assert is_nil(res)
+  end
+
+  test "validate! length returns nil if value length less than or equal length" do
+    res = Validator.validate!({:length, 10}, {:field, "foobar"})
+    assert is_nil(res)
+  end
+
   test "validation_result! returns errors if errors list not empty" do
     res = Validator.validation_result(["field is required and can't be blank"])
     assert res == {:error, ["field is required and can't be blank"]}

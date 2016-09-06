@@ -92,6 +92,20 @@ defmodule ApiController.Validator do
   def validate!({:type, :map}, {attribute, _value}) do
     validate_error!({:type, :map}, attribute)
   end
+  def validate!({:length, _first.._last = range}, {attribute, value})
+      when is_binary(value) do
+    unless String.length(value) in range, do: validate_error!({:length, range}, attribute)
+  end
+  def validate!({:length, length}, {attribute, value})
+      when is_binary(value) do
+    unless String.length(value) <= length, do: validate_error!({:length, length}, attribute)
+  end
+  def validate!({:length, _first.._last = range}, {attribute, value}) do
+    unless length(value) in range, do: validate_error!({:length, range}, attribute)
+  end
+  def validate!({:length, length}, {attribute, value}) do
+    unless length(value) <= length, do: validate_error!({:length, length}, attribute)
+  end
   def validate!(_condition, _attribute) do
     nil
   end
@@ -107,5 +121,11 @@ defmodule ApiController.Validator do
   end
   defp validate_error!({:exclusion, list}, attribute) do
     "#{attribute} should not be in #{inspect(list)}"
+  end
+  defp validate_error!({:length, first..last}, attribute) do
+    "#{attribute} length should be between #{first} and #{last} characters"
+  end
+  defp validate_error!({:length, value}, attribute) do
+    "#{attribute} length should be less than or equal #{value} characters"
   end
 end
