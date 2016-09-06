@@ -21,7 +21,7 @@ defmodule ApiController do
         conn
         |> put_view(View)
         |> put_status(status)
-        |> render("error.json", reason: reason, errors: [])
+        |> render("error.json", reason: reason, errors: errors)
       end
 
       def show_result(conn, result, status \\ 200) do
