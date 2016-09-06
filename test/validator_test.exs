@@ -61,6 +61,11 @@ defmodule ApiController.ValidatorTest do
     assert res == "field should be in [\"foo\"]"
   end
 
+  test "validate! type returns nil if value is nil" do
+    res = Validator.validate!({:type, :string}, {:field, nil})
+    assert is_nil(res)
+  end
+
   test "validate! string type returns nil if value is binary" do
     res = Validator.validate!({:type, :string}, {:field, "value"})
     assert is_nil(res)

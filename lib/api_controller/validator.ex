@@ -71,6 +71,9 @@ defmodule ApiController.Validator do
       when is_binary(value) do
     if value == "", do: validate_error!(:required, attribute)
   end
+  def validate!({:type, _}, {_attribute, nil}) do
+    nil
+  end
   def validate!({:type, :string}, {_attribute, value})
       when is_binary(value) do
     nil
