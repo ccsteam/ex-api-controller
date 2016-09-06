@@ -51,6 +51,16 @@ defmodule ApiController.ValidatorTest do
     assert res == "field is required and can't be blank"
   end
 
+  test "validate! inclusion returns nil if value in list" do
+    res = Validator.validate!({:inclusion, ["value"]}, {:field, "value"})
+    assert is_nil(res)
+  end
+
+  test "validate! inclusion returns error if value not in list" do
+    res = Validator.validate!({:inclusion, ["foo"]}, {:field, "value"})
+    assert res == "field should be in [\"foo\"]"
+  end
+
   test "validate! string type returns nil if value is binary" do
     res = Validator.validate!({:type, :string}, {:field, "value"})
     assert is_nil(res)

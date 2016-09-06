@@ -61,6 +61,16 @@ defmodule ApiController.Validator do
       when is_binary(value) do
     if value == "", do: validate_error!(:required, attribute)
   end
+  def validate!({:inclusion, list}, {attribute, value}) do
+    unless value in list, do: validate_error!({:inclusion, list}, attribute)
+  end
+  def validate!({:exclusion, list}, {attribute, value}) do
+    if value in list, do: validate_error!({:exclusion, list}, attribute)
+  end
+  def validate!({:required, true}, {attribute, value})
+      when is_binary(value) do
+    if value == "", do: validate_error!(:required, attribute)
+  end
   def validate!({:type, :string}, {_attribute, value})
       when is_binary(value) do
     nil
@@ -91,5 +101,11 @@ defmodule ApiController.Validator do
   end
   defp validate_error!({:type, type}, attribute) do
     "#{attribute} should be a #{type}"
+  end
+  defp validate_error!({:inclusion, list}, attribute) do
+    "#{attribute} should be in #{inspect(list)}"
+  end
+  defp validate_error!({:exclusion, list}, attribute) do
+    "#{attribute} should not be in #{inspect(list)}"
   end
 end
