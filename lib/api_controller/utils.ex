@@ -7,6 +7,6 @@ defmodule ApiController.Utils do
 
   @spec attributes_key_path :: false | String.t | [String.t]
   def attributes_key_path do
-    Application.get_env(:api_controller, :attributes_key_path)
+    Application.get_env(:api_controller, :attributes_key_path) || false
   end
 end
