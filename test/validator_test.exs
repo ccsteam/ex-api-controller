@@ -55,6 +55,16 @@ defmodule ApiController.ValidatorTest do
     assert invalid == ["name is required and can't be blank"]
   end
 
+  test "validate! required returns nil if map not empty" do
+    res = Validator.validate!({:required, true}, {:field, %{"foo" => "bar"}})
+    assert is_nil(res)
+  end
+
+  test "validate! required returns error if map is empty" do
+    res = Validator.validate!({:required, true}, {:field, %{}})
+    assert res == "field is required and can't be blank"
+  end
+
   test "validate! required returns nil if list not empty" do
     res = Validator.validate!({:required, true}, {:field, ["value"]})
     assert is_nil(res)

@@ -82,23 +82,21 @@ defmodule ApiController.Validator do
   def validate!({:required, true}, {attribute, nil}) do
     validate_error!(:required, attribute)
   end
-  def validate!({:required, true}, {attribute, value})
-      when is_list(value) do
-    if value == [], do: validate_error!(:required, attribute)
+  def validate!({:required, true}, {attribute, []}) do
+    validate_error!(:required, attribute)
+  end
+  def validate!({:required, true}, {attribute, ""}) do
+    validate_error!(:required, attribute)
   end
   def validate!({:required, true}, {attribute, value})
-      when is_binary(value) do
-    if value == "", do: validate_error!(:required, attribute)
+      when is_map(value) do
+    if Map.equal?(%{}, value), do: validate_error!(:required, attribute)
   end
   def validate!({:inclusion, list}, {attribute, value}) do
     unless value in list, do: validate_error!({:inclusion, list}, attribute)
   end
   def validate!({:exclusion, list}, {attribute, value}) do
     if value in list, do: validate_error!({:exclusion, list}, attribute)
-  end
-  def validate!({:required, true}, {attribute, value})
-      when is_binary(value) do
-    if value == "", do: validate_error!(:required, attribute)
   end
   def validate!({:type, _}, {_attribute, nil}) do
     nil
