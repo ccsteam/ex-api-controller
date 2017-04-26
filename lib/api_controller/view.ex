@@ -10,7 +10,7 @@ defmodule ApiController.View do
   def render("result.json", %{result: result}) do
     %{status: "ok", result: result}
   end
-  def render("error.json", %{reason: reason, errors: errors}) do
-    %{status: "error", reason: reason, errors: errors}
+  def render("error.json", %{reason: reason, errors: errors, error_data: error_data}) do
+    %{status: "error", reason: reason, errors: errors, error_data: error_data}
   end
 end

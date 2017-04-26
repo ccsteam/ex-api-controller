@@ -4,9 +4,10 @@ defmodule ApiController do
   Render JSON error and status.
 
   Response example:
-  {"status": "error", "reason": "record_not_found", errors: []}
+  {"status": "error", "reason": "record_not_found", errors: [], error_data: %{}}
   """
-  @callback show_error(Plug.Conn.t, String.t, atom | non_neg_integer, [] | [String.t]) :: Plug.Conn.t
+  @callback show_error(Plug.Conn.t, String.t, Keyword.t) :: Plug.Conn.t
+  @callback show_error(Plug.Conn.t, String.t, atom | non_neg_integer, [] | [String.t], %{} | map) :: Plug.Conn.t
 
   @doc """
   Render JSON result and status.
@@ -23,11 +24,21 @@ defmodule ApiController do
       import unquote(__MODULE__)
       @behaviour unquote(__MODULE__)
 
-      def show_error(conn, reason, status \\ :bad_request, errors \\ []) do
+      def show_error(conn, reason, opts \\ []) do
+        status = Keyword.get(opts, :status, :bad_request)
+        errors = Keyword.get(opts, :errors, [])
+        error_data = Keyword.get(opts, :error_data, %{})
         conn
         |> put_view(View)
         |> put_status(status)
-        |> render("error.json", reason: reason, errors: errors)
+        |> render("error.json", reason: reason, errors: errors, error_data: error_data)
+      end
+
+      def show_error(conn, reason, status \\ :bad_request, errors \\ [], error_data \\ %{}) do
+        conn
+        |> put_view(View)
+        |> put_status(status)
+        |> render("error.json", reason: reason, errors: errors, error_data: error_data)
       end
 
       def show_result(conn, result, status \\ 200) do
