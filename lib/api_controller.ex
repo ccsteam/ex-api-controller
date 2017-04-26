@@ -24,7 +24,7 @@ defmodule ApiController do
       import unquote(__MODULE__)
       @behaviour unquote(__MODULE__)
 
-      def show_error(conn, reason, opts \\ []) do
+      def show_error(conn, reason, opts) when is_list(opts) do
         status = Keyword.get(opts, :status, :bad_request)
         errors = Keyword.get(opts, :errors, [])
         error_data = Keyword.get(opts, :error_data, %{})

@@ -81,7 +81,7 @@ Response example:
 """
 @callback show_error(Plug.Conn.t, String.t, Keyword.t) :: Plug.Conn.t
 @callback show_error(Plug.Conn.t, String.t, atom | non_neg_integer, [] | [String.t], %{} | map) :: Plug.Conn.t
-def show_error(conn, reason, opts \\ [])
+def show_error(conn, reason, opts)
 def show_error(conn, reason, status \\ :bad_request, errors \\ [])
 
 show_error(conn, "record_not_found", status: 404, errors: [], error_data: %{chat_id: "uuid"})
